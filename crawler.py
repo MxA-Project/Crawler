@@ -68,7 +68,7 @@ def get_usernames(redis_db, usernames_list_redis):
             usernames[i] = usernames[i].decode("utf-8")
         return usernames
 
-def update_follow_count(redis_db, username, count):
+def update_followers_count(redis_db, username, count):
     """
     Update followers count of a given username,
     return 1 (True)
@@ -133,13 +133,13 @@ def crawl_username_job(username, headers_list, proxies_list, redis_db):
     Crawl and update an username' follow count
     """
     try:
-        follow_count = get_followers_count(username, spoofed_header(headers_list),
+        followers_count = get_followers_count(username, spoofed_header(headers_list),
                                            random_proxy(proxies_list))
     except ConnectionError:
         return "Failed to get follow count"
-    if follow_count != False and follow_count != None:
+    if followers_count != False and followers_count != None:
         try:
-            update_follow_count(redis_db, username, follow_count)
+            update_followers_count(redis_db, username, followers_count)
         except ConnectionError:
             return "Failed to update followers count on Redis"
 
