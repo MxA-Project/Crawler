@@ -63,7 +63,6 @@ def get_usernames(redis_db, usernames_list_redis):
         return False
     else:
         # Convert bytes to string
-        #for i in range(0, len(usernames)):
         for i, _ in enumerate(usernames):
             usernames[i] = usernames[i].decode("utf-8")
         return usernames
