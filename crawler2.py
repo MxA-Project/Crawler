@@ -37,14 +37,13 @@ def main():
         print("launched crawl job for " + i)
         time.sleep(2/len(usernames_list))
 
-    # Actualize usernames_list every hour
-    # Maintain main thread alive
+    # Maintain main thread alive and actualize usernames_list every hour
     try:
         while True:
             time.sleep(100)
             usernames_list = get_usernames(redis_db, "usernames")
     except (KeyboardInterrupt, SystemExit):
-        # We shutdown the scheduler and we logout of each Instagram account
+        # We shutdown the scheduler
         print('shutdown, please wait for correct exit')
         scheduler.shutdown()
 
