@@ -37,7 +37,7 @@ def main():
         print("launched crawl job for " + i)
         time.sleep(2/len(usernames_list))
 
-    # Maintain main thread alive and actualize usernames_list every hour
+    # Maintain main thread alive and actualize usernames_list
     try:
         while True:
             time.sleep(100)
