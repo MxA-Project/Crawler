@@ -12,7 +12,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 def main():
     """Main function"""
     # Connect to RedisDB
-    redis_db = redis.StrictRedis(host='localhost', port=6379, db=0)
+    redis_db = redis.StrictRedis(host='redis', port=6379, db=0)
     # Initialize scheduler
     scheduler = BackgroundScheduler()
     scheduler.start()
