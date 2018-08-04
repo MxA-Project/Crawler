@@ -34,14 +34,21 @@ def main():
         scheduler.add_job(crawl_username_job, 'interval',
                           args=[i, headers_list, proxies_list, redis_db], seconds=3,
                           timezone="Europe/Paris", max_instances=20000)
-        print("launched crawl job for " + i)
         time.sleep(2/len(usernames_list))
 
-    # Maintain main thread alive and actualize usernames_list
+    # Maintain main thread alive and actualize usernames
     try:
         while True:
-            time.sleep(100)
+            time.sleep(10)
+            # Remove all jobs before adding them again (support for new usernames added)
+            scheduler.remove_all_jobs()
             usernames_list = get_usernames(redis_db, "usernames")
+            for i in usernames_list:
+                scheduler.add_job(crawl_username_job, 'interval',
+                                  args=[i, headers_list, proxies_list, redis_db], seconds=3,
+                                  timezone="Europe/Paris", max_instances=20000)
+                time.sleep(2/len(usernames_list))
+
     except (KeyboardInterrupt, SystemExit):
         # We shutdown the scheduler
         print('shutdown, please wait for correct exit')
@@ -133,10 +140,10 @@ def crawl_username_job(username, headers_list, proxies_list, redis_db):
     """
     try:
         followers_count = get_followers_count(username, spoofed_header(headers_list),
-                                           random_proxy(proxies_list))
+                                              random_proxy(proxies_list))
     except ConnectionError:
         return "Failed to get follow count"
-    if followers_count != False and followers_count != None:
+    if followers_count not in (False, None):
         try:
             update_followers_count(redis_db, username, followers_count)
         except ConnectionError:
